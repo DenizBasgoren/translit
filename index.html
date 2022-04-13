@@ -32,24 +32,22 @@
 </head>
 <body>
 	<span class="title">Russian text:</span>
-	<div class="editable" id="rus" contenteditable="true">
-			sdfsdf
-			sdfsdfdsf
-			<span class=changed>blutext</span>
-			dsfdsf
-	</div>
+	<div class="editable" id="rus" contenteditable="true"></div>
 	<span>Transliterated text:</span>
-	<div class="editable" id="eng" contenteditable="false">
-			sdfsdf
-			sdfsdfdsf
-			<span class="changed">blutext</span>
-			dsfdsf
-	</div>
+	<div class="editable" id="eng" contenteditable="false"><br></div>
 	
 	<script>
 		let rus = document.getElementById('rus')
 		let eng = document.getElementById('eng')
 		rus.oninput = rushandle
+
+		// if tab, don't do anything
+		rus.addEventListener('keydown', ev => {
+			if (ev.keyCode == 9) {
+				ev.preventDefault()
+				return false
+			}
+		})
 
 		let table = {
 		'а': `a`,
@@ -127,8 +125,19 @@
 
 
 
+		function escapeHtml(unsafe)
+		{
+			return unsafe
+			.replace(/&/g, "&amp;")
+			.replace(/</g, "&lt;")
+			.replace(/>/g, "&gt;")
+			.replace(/"/g, "&quot;")
+			.replace(/'/g, "&#039;")
+			.replace(/\n/g, "<br/>")
+		}
+
 		function rushandle({target: div}) {
-			let t = div.innerText
+			let t = escapeHtml(div.innerText)
 			let nt = ''
 			let inaspan=false
 			for (let i = 0; i<t.length; i++) {
